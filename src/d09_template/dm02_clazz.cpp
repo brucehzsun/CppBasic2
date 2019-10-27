@@ -19,10 +19,33 @@ private:
     T a;
 };
 
+/**
+ * 子类派生模板父类必须制定类型；
+ */
+class B : public A<int> {
+public:
+    B(int a, int b) : A<int>(a) {
+        this->b = b;
+    }
+
+public:
+    void printB() {
+        std::cout << "b:" << this->b << std::endl;
+    }
+
+private:
+    int b;
+};
+
 int main() {
     A<int> a(100);
     a.printA();
 
-    A<int> b('c');
+    A<int> a2('c');
+    a2.printA();
+
+
+    B b(100, 200);
     b.printA();
+    b.printB();
 }
