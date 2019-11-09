@@ -38,14 +38,18 @@ private:
 };
 
 int main() {
-    A<int> a(100);
-    a.printA();
-
-    A<int> a2('c');
-    a2.printA();
-
-
-    B b(100, 200);
-    b.printA();
-    b.printB();
+    std::cout << "size of char = " << sizeof(char) << std::endl;
+    std::cout << "size of short = " << sizeof(short) << std::endl;
+    std::cout << "size of uint8_t = " << sizeof(uint8_t) << std::endl;
+    std::cout << "size of char* = " << sizeof(char *) << std::endl;
+//    A<int> a(100);
+//    a.printA();
+//
+//    A<int> a2('c');
+//    a2.printA();
+//
+//
+//    B b(100, 200);
+//    b.printA();
+//    b.printB();
 }
