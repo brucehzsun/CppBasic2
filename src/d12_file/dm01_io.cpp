@@ -8,7 +8,7 @@ using namespace std;
 
 int main() {
 
-    string file_name = "test.txt";
+    sh
     ofstream fout(file_name);
     fout << "hello 1" << endl;
     fout << "hello 2" << endl;
