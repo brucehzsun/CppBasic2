@@ -13,6 +13,9 @@ void parseOggPage(ifstream &fin) {
     char *oggs = new char[4];
     fin.read(oggs, 4);
     cout << "\nnew page:" << oggs << endl;
+    if (oggs != "Oggs") {
+        cout << "error" << endl;
+    }
 
     char *version = new char[1];
     fin.read(version, 1);
@@ -20,7 +23,7 @@ void parseOggPage(ifstream &fin) {
 
     char *header_type = new char[1];
     fin.read(header_type, 1);
-    cout << "header_type:" << (int) (*header_type) << endl;
+//    cout << "header_type:" << (int) (*header_type) << endl;
 
     char *granule_position = new char[8];
     fin.read(granule_position, 8);
@@ -45,18 +48,33 @@ void parseOggPage(ifstream &fin) {
 
     //27＋255＋255*255=65307）。
     // page_size = header_size(27+number_page_segments) +segment_table中每个segment的大小;
+    cout << "segment_table_len:";
+    int segment_tables[page_segments];
     for (int i = 0; i < page_segments; i++) {
-
         char *segment_table = new char[1];
         fin.read(segment_table, 1);
         int segment_table_value = (int) (*segment_table);
 
-        cout << "segment_table;value = " << segment_table_value << endl;//19
-
-        char *data = new char[segment_table_value];
-        fin.read(data, segment_table_value);
-        cout << "data = " << data << endl;//19
+        cout << segment_table_value << ",";//19
+        segment_tables[i] = segment_table_value;
     }
+    cout << " " << endl;
+
+    cout << "segment_table_value:";
+    for (int i = 0; i < page_segments; i++) {
+        int segment_table_value = segment_tables[i];
+        if (segment_table_value < 0) {
+            segment_table_value = 255 + 1 + segment_table_value;
+        }
+        if (segment_table_value > 0) {
+            char *data = new char[segment_table_value];
+            fin.read(data, segment_table_value);
+            cout << "len = " << segment_table_value << ",data = " << data[0] << data[1] << data[2]
+                 << data[3];//19
+        }
+    }
+    cout << " " << endl;
+
 
 //    int dateLen = page_segments * segmentTableSize;
 //    cout << "dataLen = " << dateLen << ",currentTableSize = " << currentTableSize << endl;//19
@@ -74,10 +92,9 @@ int main() {
         return 0;
     }
 
-    parseOggPage(fin);
-    parseOggPage(fin);
-    parseOggPage(fin);
-//    parseOggPage(fin);
+    while (!fin.eof()) {
+        parseOggPage(fin);
+    }
 
     return 0;
 }
