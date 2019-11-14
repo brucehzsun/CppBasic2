@@ -6,129 +6,133 @@
 #include <fstream>
 #include <string>
 #include <queue>
+#include <vector>
 
 using namespace std;
 
 int segmentTableSize = 0;
 
-string cur_page;
 
+class OggsPage {
+public:
+    OggsPage() {}
 
-void parseOggPage(char *data, int len) {
+public:
+    string head;
+    int page_sequence_number;
+    int page_segments;
+    string page_data;
+};
 
-    if (len < 27) {
-        cout << "data too small，wait..." << endl;
-        return;
-    }
+class OggPasrser {
+public:
+    void feed(char *data, int len) {
 
-    int page_segments = 0;
-    int position = 0;
-    if (cur_page.empty()) {
-        for (int i = 0; i < 4; i++) {
-            cur_page += data[position++];
-        }
-
-        if (cur_page.rfind("OggS", 0) != 0) {
-            cout << "开头不是OggS." << endl;
-            return;
-        }
-        cout << "cur_page = " << cur_page << endl;
-
-        //version
-        cur_page += data[position++];
-        cout << "version:" << cur_page << endl;
-
-        char *header_type = new char[1];
-        header_type[0] = data[position++];
-        cout << "header_type:" << (short) (*header_type) << endl;
-        cur_page += header_type;
-
-        char *granule_position = new char[8];
-        for (int i = 0; i < 8; i++) {
-            granule_position[0] = data[position++];
-        }
-        cur_page += granule_position;
-
-        char *bitstream_serial_number = new char[4];
-        for (int i = 0; i < 4; i++) {
-            bitstream_serial_number[0] = data[position++];
-        }
-        cout << "serial_number:" << (int) (*bitstream_serial_number) << endl;
-        cur_page += bitstream_serial_number;
-
-        char *page_sequence_number = new char[4];
-        for (int i = 0; i < 4; i++) {
-            page_sequence_number[0] = data[position++];
-        }
-        cout << "page_sequence_number:" << (int) (*page_sequence_number) << endl;
-        cur_page += page_sequence_number;
-
-        char *CRC_checksum = new char[4];
-        for (int i = 0; i < 4; i++) {
-            CRC_checksum[0] = data[position++];
-        }
-        cout << "CRC_checksum:" << (int) (*CRC_checksum) << endl;
-        cur_page += CRC_checksum;
-
-        char *number_page_segments = new char[1];
-        number_page_segments[0] = data[position++];
-        page_segments = (int) (*number_page_segments);
-        cout << "page_segments:" << page_segments << endl;
-        cur_page += number_page_segments;
-    }
-
-    int limit = len - position;
-    if (limit < page_segments) {
-        cout << "数据不够用了 limit:" << limit << ", page_segments = " << page_segments << endl;
-        return;
-    }
-
-    int segment_tables[page_segments];
-    //27＋255＋255*255=65307）。
-    // page_size = header_size(27+number_page_segments) +segment_table中每个segment的大小;
-    cout << "segment_table_len:";
-    for (int i = 0; i < page_segments; i++) {
-        char *segment_table = new char[1];
-        segment_table[0] = data[position++];
-        int segment_table_value = (int) (*segment_table);
-        cout << segment_table_value << ",";//19
-        segment_tables[i] = segment_table_value;
-        cur_page += segment_table_value;
-    }
-    cout << " " << endl;
-
-
-    limit = len - position;
-    if (limit < page_segments) {
-        cout << "数据不够用了 limit:" << limit << ", page_segments = " << page_segments << endl;
-        return;
-    }
-    cout << "limit:" << limit << ", page_segments = " << page_segments << endl;
-
-    cout << "segment_table_value:";
-    for (int i = 0; i < page_segments; i++) {
-        int segment_table_value = segment_tables[i];
-        if (segment_table_value < 0) {
-            segment_table_value = 255 + 1 + segment_table_value;
-        }
-        if (limit < segment_table_value) {
-            cout << "数据不够用了 limit:" << limit << ", page_segments = " << page_segments << endl;
+        if (len < 27) {
+            cout << "data too small，wait..." << endl;
             return;
         }
 
-        if (segment_table_value > 0) {
-            char *data = new char[segment_table_value];
-            for (int i = 0; i < segment_table_value; i++) {
-                data[i] = data[position++];
+        int position = 0;
+        if (cur_page == nullptr) {
+            char header[4];
+            for (char &i : header) {
+                i = data[position++];
             }
-            cout << "len = " << segment_table_value << ",data = " << data[0] << data[1] << data[2]
-                 << data[3];//19
-            cur_page += data;
-        }
-    }
-    cout << " " << endl;
+            cur_page = new OggsPage();
+            cur_page->page_data += header;
+            if (cur_page->page_data.rfind("OggS", 0) != 0) {
+                cout << "开头不是OggS." << endl;
+                return;
+            }
 
-}
+            cout << "cur_page = " << cur_page->page_data << endl;
+
+            cur_page->page_data += data[position++];//version
+            cur_page->page_data += data[position++];//header_type
+            for (int i = 0; i < 8; i++) {//granule_position
+                cur_page->page_data += data[position++];
+            }
+            for (int i = 0; i < 4; i++) {//serial_number
+                cur_page->page_data = data[position++];
+            }
+
+            char page_sequence_number[4];
+            for (char &i : page_sequence_number) {
+                i = data[position++];
+            }
+            cur_page->page_sequence_number = (int) (*page_sequence_number);
+            cout << "page_sequence_number:" << cur_page->page_sequence_number << endl;
+            cur_page->page_data += page_sequence_number;
+            for (int i = 0; i < 4; i++) {//CRC_checksum
+                cur_page->page_data = data[position++];
+            }
+
+            char *number_page_segments = new char[1];
+            number_page_segments[0] = data[position++];
+            cur_page->page_segments = (int) (*number_page_segments);
+            cout << "page_segments:" << cur_page->page_segments << endl;
+            cur_page->page_data += number_page_segments;
+        }
+
+//        int limit = len - position;
+//        if (limit < page_segments) {
+//            cout << "数据不够用了 limit:" << limit << ", page_segments = " << page_segments << endl;
+//            return;
+//        }
+//
+//        int segment_tables[page_segments];
+//        //27＋255＋255*255=65307）。
+//        // page_size = header_size(27+number_page_segments) +segment_table中每个segment的大小;
+//        cout << "segment_table_len:";
+//        for (int i = 0; i < page_segments; i++) {
+//            char *segment_table = new char[1];
+//            segment_table[0] = data[position++];
+//            int segment_table_value = (int) (*segment_table);
+//            cout << segment_table_value << ",";//19
+//            segment_tables[i] = segment_table_value;
+//            cur_page += segment_table_value;
+//        }
+//        cout << " " << endl;
+//
+//
+//        limit = len - position;
+//        if (limit < page_segments) {
+//            cout << "数据不够用了 limit:" << limit << ", page_segments = " << page_segments << endl;
+//            return;
+//        }
+//        cout << "limit:" << limit << ", page_segments = " << page_segments << endl;
+//
+//        cout << "segment_table_value:";
+//        for (int i = 0; i < page_segments; i++) {
+//            int segment_table_value = segment_tables[i];
+//            if (segment_table_value < 0) {
+//                segment_table_value = 255 + 1 + segment_table_value;
+//            }
+//            if (limit < segment_table_value) {
+//                cout << "数据不够用了 limit:" << limit << ", page_segments = " << page_segments << endl;
+//                return;
+//            }
+//
+//            if (segment_table_value > 0) {
+//                char *data = new char[segment_table_value];
+//                for (int i = 0; i < segment_table_value; i++) {
+//                    data[i] = data[position++];
+//                }
+//                cout << "len = " << segment_table_value << ",data = " << data[0] << data[1] << data[2]
+//                     << data[3];//19
+//                cur_page += data;
+//            }
+//        }
+//        cout << " " << endl;
+
+    }
+
+private:
+    queue<OggsPage> *oggs_queue = new queue<OggsPage>();
+    OggsPage *cur_page = nullptr;
+};
+
 
 int main() {
 
@@ -144,12 +148,13 @@ int main() {
     }
 
 
+    OggPasrser oggPasrser;
     while (!fin.eof()) {
         fin.read(buf, buf_size);
         for (int i = 0; i < buf_size; i++) {
             audio_queue.push(buf[i]);
         }
-        parseOggPage(buf, buf_size);
+        oggPasrser.feed(buf, buf_size);
         break;
     }
 //    }
