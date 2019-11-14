@@ -22,8 +22,8 @@ void parseOggPage(char *data, int len) {
     }
 
     int page_segments = 0;
+    int position = 0;
     if (cur_page.empty()) {
-        int position = 0;
         for (int i = 0; i < 4; i++) {
             cur_page += data[position++];
         }
@@ -77,40 +77,56 @@ void parseOggPage(char *data, int len) {
         cur_page += number_page_segments;
     }
 
+    int limit = len - position;
+    if (limit < page_segments) {
+        cout << "数据不够用了 limit:" << limit << ", page_segments = " << page_segments << endl;
+        return;
+    }
+
+    int segment_tables[page_segments];
+    //27＋255＋255*255=65307）。
+    // page_size = header_size(27+number_page_segments) +segment_table中每个segment的大小;
+    cout << "segment_table_len:";
+    for (int i = 0; i < page_segments; i++) {
+        char *segment_table = new char[1];
+        segment_table[0] = data[position++];
+        int segment_table_value = (int) (*segment_table);
+        cout << segment_table_value << ",";//19
+        segment_tables[i] = segment_table_value;
+        cur_page += segment_table_value;
+    }
+    cout << " " << endl;
 
 
-//    int segment_tables[page_segments];
-//    if (!audio_stream.eof()) {
-//        //27＋255＋255*255=65307）。
-//        // page_size = header_size(27+number_page_segments) +segment_table中每个segment的大小;
-//        cout << "segment_table_len:";
-//        for (int i = 0; i < page_segments; i++) {
-//            char *segment_table = new char[1];
-//            audio_stream.read(segment_table, 1);
-//            int segment_table_value = (int) (*segment_table);
-//
-//            cout << segment_table_value << ",";//19
-//            segment_tables[i] = segment_table_value;
-//        }
-//        cout << " " << endl;
-//    }
-//
-//    if (!audio_stream.eof()) {
-//        cout << "segment_table_value:";
-//        for (int i = 0; i < page_segments; i++) {
-//            int segment_table_value = segment_tables[i];
-//            if (segment_table_value < 0) {
-//                segment_table_value = 255 + 1 + segment_table_value;
-//            }
-//            if (segment_table_value > 0) {
-//                char *data = new char[segment_table_value];
-//                audio_stream.read(data, segment_table_value);
-//                cout << "len = " << segment_table_value << ",data = " << data[0] << data[1] << data[2]
-//                     << data[3];//19
-//            }
-//        }
-//        cout << " " << endl;
-//    }
+    limit = len - position;
+    if (limit < page_segments) {
+        cout << "数据不够用了 limit:" << limit << ", page_segments = " << page_segments << endl;
+        return;
+    }
+    cout << "limit:" << limit << ", page_segments = " << page_segments << endl;
+
+    cout << "segment_table_value:";
+    for (int i = 0; i < page_segments; i++) {
+        int segment_table_value = segment_tables[i];
+        if (segment_table_value < 0) {
+            segment_table_value = 255 + 1 + segment_table_value;
+        }
+        if (limit < segment_table_value) {
+            cout << "数据不够用了 limit:" << limit << ", page_segments = " << page_segments << endl;
+            return;
+        }
+
+        if (segment_table_value > 0) {
+            char *data = new char[segment_table_value];
+            for (int i = 0; i < segment_table_value; i++) {
+                data[i] = data[position++];
+            }
+            cout << "len = " << segment_table_value << ",data = " << data[0] << data[1] << data[2]
+                 << data[3];//19
+            cur_page += data;
+        }
+    }
+    cout << " " << endl;
 
 }
 
