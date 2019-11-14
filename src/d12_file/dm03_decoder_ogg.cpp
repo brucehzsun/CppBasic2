@@ -14,6 +14,9 @@ void parseOggPage(ifstream &fin) {
         char *oggs = new char[4];
         fin.read(oggs, 4);
         cout << "\nnew page:" << oggs << endl;
+        if (strcmp("OggS", oggs) != 0) {
+            cout <<">>>>>>>>>>> error "<< endl;
+        }
     }
 
     if (!fin.eof()) {
