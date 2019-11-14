@@ -9,6 +9,7 @@ using namespace std;
 int segmentTableSize = 0;
 
 void parseOggPage(ifstream &fin) {
+    //0-3
     char *oggs = new char[4];
     fin.read(oggs, 4);
     cout << "\nnew page:" << oggs << endl;
@@ -31,7 +32,7 @@ void parseOggPage(ifstream &fin) {
 
     char *page_sequence_number = new char[4];
     fin.read(page_sequence_number, 4);
-//    cout << "page_sequence_number:" << (int) (*page_sequence_number) << endl;
+    cout << "page_sequence_number:" << (int) (*page_sequence_number) << endl;
 
     char *CRC_checksum = new char[4];
     fin.read(CRC_checksum, 4);
@@ -40,19 +41,28 @@ void parseOggPage(ifstream &fin) {
     char *number_page_segments = new char[1];
     fin.read(number_page_segments, 1);
     int page_segments = (int) (*number_page_segments);
-    cout << "number_segments:" << page_segments << endl;
+    cout << "page_segments:" << page_segments << endl;
 
-    char *segment_table = new char[1];
-    fin.read(segment_table, 1);
-    int currentTableSize = (int) (*segment_table);
-    if (segmentTableSize == 0) {
-        segmentTableSize = currentTableSize;
+    //27＋255＋255*255=65307）。
+    // page_size = header_size(27+number_page_segments) +segment_table中每个segment的大小;
+    for (int i = 0; i < page_segments; i++) {
+
+        char *segment_table = new char[1];
+        fin.read(segment_table, 1);
+        int segment_table_value = (int) (*segment_table);
+
+        cout << "segment_table;value = " << segment_table_value << endl;//19
+
+        char *data = new char[segment_table_value];
+        fin.read(data, segment_table_value);
+        cout << "data = " << data << endl;//19
     }
-    int dateLen = page_segments * segmentTableSize;
-    cout << "dataLen = " << dateLen << ",currentTableSize = " << currentTableSize << endl;//19
-    char *data = new char[dateLen];
-    fin.read(data, dateLen);
-    cout << "dataLen = " << dateLen << ",data:" << data << endl;//19
+
+//    int dateLen = page_segments * segmentTableSize;
+//    cout << "dataLen = " << dateLen << ",currentTableSize = " << currentTableSize << endl;//19
+//    char *data = new char[dateLen];
+//    fin.read(data, dateLen);
+//    cout << "dataLen = " << dateLen << ",data:" << data << endl;//19
 }
 
 int main() {
