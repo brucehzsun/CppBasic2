@@ -25,7 +25,7 @@ bool OggsPage::append(char data) {
 
     if (!isParseHead) {
         isParseHead = true;
-        char capture_pattern[4];
+        char *capture_pattern = new char[4];
         str_stream.read(capture_pattern, 4);
         cout << "capture_pattern = " << capture_pattern << ">>>>>>>>>>>>>>>" << endl;
 
