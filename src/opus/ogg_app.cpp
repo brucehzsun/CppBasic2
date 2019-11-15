@@ -18,6 +18,7 @@ int segmentTableSize = 0;
 
 int main() {
 
+    cout << "aaaa" << endl;
     string file_name = "/Users/bruce/CLionProjects/CppBasic2/data/0347248_6D25F77B_12CA.opus";
     ifstream fin(file_name, ios::in | ios::binary);
     queue<char> audio_queue;

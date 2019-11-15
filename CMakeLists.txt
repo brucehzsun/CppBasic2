@@ -1,7 +1,9 @@
 cmake_minimum_required(VERSION 3.13)
 project(CppBasic2)
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 11)
+
+set(CMAKE_BUILD_TYPE Debug)
 
 #add_executable(CppBasic2 main.cpp)
 #add_executable(CppBasic_09_01 src/d09_template/dm01_func.cpp)
@@ -15,4 +17,4 @@ set(CMAKE_CXX_STANDARD 14)
 #add_executable(CppBasic_11_04 src/d11_exception/dm04_test.cpp)
 #add_executable(CppBasic_12_01 src/d12_file/dm01_io.cpp)
 #add_executable(CppBasic_12_02 src/d12_file/dm02_binary_file.cpp)
-add_executable(CppBasic_12_03 src/opus/ogg_pasrser.cpp src/opus/ogg_pasrser.h src/opus/oggs_page.cpp src/opus/oggs_page.h src/opus/ogg_app.cpp)
+add_executable(CppBasic_opus src/opus/ogg_pasrser.cpp src/opus/ogg_pasrser.h src/opus/oggs_page.cpp src/opus/oggs_page.h src/opus/ogg_app.cpp)

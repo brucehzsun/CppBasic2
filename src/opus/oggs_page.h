@@ -34,6 +34,7 @@ private:
     int page_sequence_number;
     int page_segments;
     bool valid;
+    bool isParseHead;
 };
 
 #endif //CPPBASIC2_OGGSPAGE_H
