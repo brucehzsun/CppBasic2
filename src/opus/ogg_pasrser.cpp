@@ -2,9 +2,9 @@
 // Created by bruce on 2019-11-15.
 //
 
-#include "OggPasrser.h"
+#include "ogg_pasrser.h"
 
-bool OggPasrser::feed(char *raw_ata, int len) {
+bool ogg_pasrser::feed(char *raw_ata, int len) {
     if (len < 27) {
         cout << "data too small，wait..." << endl;
         return false;

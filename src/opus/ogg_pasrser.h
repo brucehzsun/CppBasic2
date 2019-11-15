@@ -13,7 +13,7 @@ using namespace std;
 
 
 
-class OggPasrser {
+class ogg_pasrser {
 public:
     bool feed(char *data, int len);
 
