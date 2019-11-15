@@ -5,7 +5,7 @@
 #include "ogg_pasrser.h"
 
 bool OggPasrser::feed(char *raw_ata, int len) {
-    cout << "feed len = " << len << endl;
+    cout << "feed len = " << len << ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>" << endl;
     if (len < 27) {
         cout << "data too small，wait..." << endl;
         return false;
@@ -18,14 +18,15 @@ bool OggPasrser::feed(char *raw_ata, int len) {
     bool ret;
     if (cur_page == nullptr) {
         cur_page = new OggsPage();
-        while (!audio_queue->empty()) {
-            ret = cur_page->append(audio_queue->front());
-            if (ret) {
-                audio_queue->pop();
-            } else {
-                cout << "OggsPage 满了;limit = " << cur_page->limit() << endl;
-                return false;
-            }
+    }
+
+    while (!audio_queue->empty()) {
+        ret = cur_page->append(audio_queue->front());
+        if (ret) {
+            audio_queue->pop();
+        } else {
+            this->oggs_queue->push(cur_page);
+            cur_page = new OggsPage();
         }
     }
 

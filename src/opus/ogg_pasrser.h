@@ -13,7 +13,6 @@
 using namespace std;
 
 
-
 class OggPasrser {
 public:
     bool feed(char *data, int len);
@@ -21,7 +20,7 @@ public:
     bool end();
 
 private:
-    queue<OggsPage> *oggs_queue = new queue<OggsPage>();
+    queue<OggsPage *> *oggs_queue = new queue<OggsPage *>();
     queue<char> *audio_queue = new queue<char>();
     OggsPage *cur_page = nullptr;
 };

@@ -26,17 +26,17 @@ bool OggsPage::append(char data) {
         isParseHead = true;
         char capture_pattern[4];
         str_stream.read(capture_pattern, 4);
-        cout << "capture_pattern = " << capture_pattern << endl;
+        cout << "capture_pattern = " << capture_pattern << "$$$$$$$" << endl;
 
         //version &
         char version[1];
         str_stream.read(version, 1);
-        cout << "version = " << (int) (*version) << endl;
+//        cout << "version = " << (int) (*version) << endl;
 
         //header_type
         char header_type[1];
         str_stream.read(header_type, 1);
-        cout << "version = " << (int) (*header_type) << endl;
+        cout << "header_type = " << (int) (*header_type) << endl;
 
         char granule_position[8];
         str_stream.read(granule_position, 8);
@@ -65,11 +65,16 @@ bool OggsPage::append(char data) {
         //segment_table;
         this->capacity_ = 27;
         for (int i = 0; i < this->number_page_segments; i++) {
-            char segment_size[1];
-            str_stream.read(segment_size, 1);
+            char segment_size_str[1];
+            str_stream.read(segment_size_str, 1);
+            int segment_size = (int) (*segment_size_str);
+            if (segment_size < 0) {
+                segment_size = 255 - 1 + segment_size;
+            }
+
             this->capacity_++;
-            this->capacity_ += (int) (*segment_size);
-            cout << "segment_size = " << (int) (*segment_size) << endl;
+            this->capacity_ += segment_size;
+            cout << "segment_size = " << segment_size << endl;
         }
         cout << "capacity = " << this->capacity_ << endl;
     }
