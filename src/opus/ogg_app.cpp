@@ -39,7 +39,7 @@ int main() {
         }
         oggPasrser.feed(buf, buf_size);
     }
-//    }
+    oggPasrser.end();
 
 //    string s;
 //    s.append("aaaaa");

@@ -5,7 +5,8 @@
 
 OggsPage::OggsPage() {
     this->capacity_ = 0;
-    isParseHead = false;
+    this->isParseHead = false;
+    this->limit_ = 0;
 }
 
 bool OggsPage::append(char data) {
@@ -26,7 +27,7 @@ bool OggsPage::append(char data) {
         isParseHead = true;
         char capture_pattern[4];
         str_stream.read(capture_pattern, 4);
-        cout << "capture_pattern = " << capture_pattern << "$$$$$$$" << endl;
+        cout << "capture_pattern = " << capture_pattern << ">>>>>>>>>>>>>>>" << endl;
 
         //version &
         char version[1];
@@ -44,7 +45,7 @@ bool OggsPage::append(char data) {
 
         char bitstream_serial_number[4];
         str_stream.read(bitstream_serial_number, 4);
-        cout << "serial_number = " << (int) (*bitstream_serial_number) << endl;
+//        cout << "serial_number = " << (int) (*bitstream_serial_number) << endl;
 
         char page_sequence[4];
         str_stream.read(page_sequence, 4);
@@ -69,17 +70,14 @@ bool OggsPage::append(char data) {
             str_stream.read(segment_size_str, 1);
             int segment_size = (int) (*segment_size_str);
             if (segment_size < 0) {
-                segment_size = 255 - 1 + segment_size;
+                segment_size = 255 + 1 + segment_size;
             }
 
             this->capacity_++;
             this->capacity_ += segment_size;
             cout << "segment_size = " << segment_size << endl;
         }
-        cout << "capacity = " << this->capacity_ << endl;
     }
-
-
     return true;
 
 }

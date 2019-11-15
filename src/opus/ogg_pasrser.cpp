@@ -5,7 +5,7 @@
 #include "ogg_pasrser.h"
 
 bool OggPasrser::feed(char *raw_ata, int len) {
-    cout << "feed len = " << len << ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>" << endl;
+    cout << "feed len = " << len << endl;
     if (len < 27) {
         cout << "data too small，wait..." << endl;
         return false;
@@ -31,4 +31,8 @@ bool OggPasrser::feed(char *raw_ata, int len) {
     }
 
     return true;
+}
+
+bool OggPasrser::end() {
+    cout << "end; queue size = " << this->oggs_queue->size() << endl;
 }
