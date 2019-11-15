@@ -7,6 +7,7 @@
 
 #include <iostream>
 #include <string>
+#include <sstream>
 
 using namespace std;
 
@@ -22,7 +23,7 @@ public:
 
     int &limit();
 
-    int &getSequenceNumber();
+    int &getNumberPageSegments();
 
     string &header();
 
@@ -31,10 +32,11 @@ private:
     int capacity_;//总大小
     int limit_;//当前数据的大小
     string head_;
-    int page_sequence_number;
+    int number_page_segments;
     int page_segments;
     bool valid;
     bool isParseHead;
+    stringstream str_stream;
 };
 
 #endif //CPPBASIC2_OGGSPAGE_H

@@ -5,46 +5,75 @@
 
 OggsPage::OggsPage() {
     this->capacity_ = 0;
+    isParseHead = false;
 }
 
 bool OggsPage::append(char data) {
     if (limit_ <= 3) {
         head_ += data;
     }
+
+    str_stream << data;
     data_buf_ += data;
     limit_++;
 
-    if (data_buf_.size() > 27 * 2) {
-        if (!isParseHead) {
-            isParseHead = true;
-            if (data_buf_.rfind("OggS", 0) == 0) {
-                cout << "开头是OggS，合法格式" << endl;
-                this->valid = true;
-            } else {
-                this->valid = false;
-                cout << "开头是OggS，非法格式" << endl;
-            }
-
-            string numb_str = data_buf_.substr(4 + 6 + 8 + 4, 4);
-//        page_sequence_number = stoi(numb_str, 0, 2);
-            cout << "numb_str:" << numb_str << endl;
-            cout << "page_sequence_number:" << page_sequence_number << endl;
-        }
+    if (data_buf_.size() < 27) {
+        return true;
     }
 
-//    cur_page->page_data += page_sequence_number;
-//    for (int i = 0; i < 4; i++) {//CRC_checksum
-//        cur_page->page_data += audio_queue->front();
-//        audio_queue->pop();
-//    }
-//
-//    char *number_page_segments = new char[1];
-//    number_page_segments[0] = audio_queue->front();
-//    audio_queue->pop();
-//
-//    cur_page->page_segments = (int) (*number_page_segments);
-//    cout << "page_segments:" << cur_page->page_segments << endl;
-//    cur_page->page_data += number_page_segments;
+    if (!isParseHead) {
+        isParseHead = true;
+        char capture_pattern[4];
+        str_stream.read(capture_pattern, 4);
+        cout << "capture_pattern = " << capture_pattern << endl;
+
+        //version &
+        char version[1];
+        str_stream.read(version, 1);
+        cout << "version = " << (int) (*version) << endl;
+
+        //header_type
+        char header_type[1];
+        str_stream.read(header_type, 1);
+        cout << "version = " << (int) (*header_type) << endl;
+
+        char granule_position[8];
+        str_stream.read(granule_position, 8);
+
+
+        char bitstream_serial_number[4];
+        str_stream.read(bitstream_serial_number, 4);
+        cout << "serial_number = " << (int) (*bitstream_serial_number) << endl;
+
+        char page_sequence[4];
+        str_stream.read(page_sequence, 4);
+        cout << "page_sequence = " << (int) (*page_sequence) << endl;
+
+        //CRC_checksum
+        char CRC_checksum[4];
+        str_stream.read(CRC_checksum, 4);
+
+        //number_page_segments
+        char number_page_segments[1];
+        str_stream.read(number_page_segments, 1);
+        this->number_page_segments = (int) (*number_page_segments);
+        cout << "number_page_segments = " << this->number_page_segments << endl;
+    }
+
+    if (this->capacity_ == 0 && limit_ - 27 > number_page_segments) {
+        //segment_table;
+        this->capacity_ = 27;
+        for (int i = 0; i < this->number_page_segments; i++) {
+            char segment_size[1];
+            str_stream.read(segment_size, 1);
+            this->capacity_++;
+            this->capacity_ += (int) (*segment_size);
+            cout << "segment_size = " << (int) (*segment_size) << endl;
+        }
+        cout << "capacity = " << this->capacity_ << endl;
+    }
+
+
     return true;
 
 }
@@ -61,8 +90,8 @@ int &OggsPage::limit() {
     return this->limit_;
 }
 
-int &OggsPage::getSequenceNumber() {
-    return this->page_sequence_number;
+int &OggsPage::getNumberPageSegments() {
+    return this->number_page_segments;
 }
 
 string &OggsPage::header() {
