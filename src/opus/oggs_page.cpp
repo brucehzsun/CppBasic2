@@ -4,15 +4,43 @@
 #include "oggs_page.h"
 
 OggsPage::OggsPage() {
-    capacity = 0;
+    this->capacity_ = 0;
 }
 
 bool OggsPage::append(char data) {
     if (limit_ <= 3) {
         head_ += data;
     }
-    page_data += data;
+    data_buf_ += data;
     limit_++;
+
+    if (data_buf_.size() > 27 * 3) {
+        if (data_buf_.rfind("OggS", 0) == 0) {
+            cout << "开头是OggS，合法格式" << endl;
+            this->valid = true;
+        } else {
+            this->valid = false;
+            cout << "开头是OggS，非法格式" << endl;
+        }
+
+        string numb_str = data_buf_.substr(6 + 8 + 4, 4);
+        page_sequence_number = stoi(numb_str, 0, 2);
+        cout << "page_sequence_number:" << page_sequence_number << endl;
+    }
+
+//    cur_page->page_data += page_sequence_number;
+//    for (int i = 0; i < 4; i++) {//CRC_checksum
+//        cur_page->page_data += audio_queue->front();
+//        audio_queue->pop();
+//    }
+//
+//    char *number_page_segments = new char[1];
+//    number_page_segments[0] = audio_queue->front();
+//    audio_queue->pop();
+//
+//    cur_page->page_segments = (int) (*number_page_segments);
+//    cout << "page_segments:" << cur_page->page_segments << endl;
+//    cur_page->page_data += number_page_segments;
 
 }
 
@@ -28,10 +56,10 @@ int &OggsPage::limit() {
     return this->limit_;
 }
 
-long OggsPage::getSequenceNumber() {
+int &OggsPage::getSequenceNumber() {
     return this->page_sequence_number;
 }
 
-string OggsPage::header() {
+string &OggsPage::header() {
     return this->head_;
 }
