@@ -8,12 +8,13 @@
 #include <iostream>
 #include <string>
 #include <queue>
+#include "oggs_page.h"
 
 using namespace std;
 
 
 
-class ogg_pasrser {
+class OggPasrser {
 public:
     bool feed(char *data, int len);
 

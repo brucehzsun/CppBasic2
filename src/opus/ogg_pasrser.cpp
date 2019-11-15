@@ -4,7 +4,7 @@
 
 #include "ogg_pasrser.h"
 
-bool ogg_pasrser::feed(char *raw_ata, int len) {
+bool OggPasrser::feed(char *raw_ata, int len) {
     if (len < 27) {
         cout << "data too small，wait..." << endl;
         return false;
@@ -16,72 +16,74 @@ bool ogg_pasrser::feed(char *raw_ata, int len) {
 
     if (cur_page == nullptr) {
         cur_page = new OggsPage();
-        char header[4];
-        for (char &i : header) {
-            i = audio_queue->front();
-            audio_queue->pop();
-            cur_page->append(i);;
-        }
-
-
-        if (cur_page->get_page_data().rfind("OggS", 0) != 0) {
-            cout << "开头不是OggS." << endl;
-            return true;
-        }
-
-        cout << "cur_page = " << cur_page->get_page_data() << endl;
-
-        //version & header_type
-        for (int i = 0; i < 2; i++) {
-            cur_page->page_data += audio_queue->front();
-            audio_queue->pop();
-        }
-
-        for (int i = 0; i < 8; i++) {//granule_position
-            cur_page->page_data += audio_queue->front();
-            audio_queue->pop();
-        }
-        for (int i = 0; i < 4; i++) {//serial_number
-            cur_page->page_data += audio_queue->front();
-            audio_queue->pop();
-        }
-
-        char page_sequence_number[4];
-        for (char &i : page_sequence_number) {
-            i += audio_queue->front();
-            audio_queue->pop();
-        }
-        cur_page->page_sequence_number = (int) (*page_sequence_number);
-        cout << "page_sequence_number:" << cur_page->page_sequence_number << endl;
-        cur_page->page_data += page_sequence_number;
-        for (int i = 0; i < 4; i++) {//CRC_checksum
-            cur_page->page_data += audio_queue->front();
-            audio_queue->pop();
-        }
-
-        char *number_page_segments = new char[1];
-        number_page_segments[0] = audio_queue->front();
+        cur_page->append(audio_queue->front());
         audio_queue->pop();
-
-        cur_page->page_segments = (int) (*number_page_segments);
-        cout << "page_segments:" << cur_page->page_segments << endl;
-        cur_page->page_data += number_page_segments;
     }
 
 
-    if (audio_queue->front() < cur_page->page_segments) {
-        cout << "wait..." << endl;
-        return true;
-    }
-    for (int i = 0; i < cur_page->page_segments; i++) {
-        char segment_value = audio_queue->front();
-        audio_queue->pop();
-
-        cur_page->page_data += segment_value;
-        cur_page->segment_size_queue->push((int) segment_value);
-    }
-
-    cout << "当前page大小 = " << cur_page->page_data << endl;
+//    char header[4];
+//    for (char &i : header) {
+//        i = audio_queue->front();
+//        audio_queue->pop();
+//        cur_page->append(i);;
+//    }
+//
+//
+//    if (cur_page->get_page_data().rfind("OggS", 0) != 0) {
+//        cout << "开头不是OggS." << endl;
+//        return true;
+//    }
+//
+//    cout << "cur_page = " << cur_page->get_page_data() << endl;
+//
+//    //version & header_type
+//    for (int i = 0; i < 2; i++) {
+//        cur_page->page_data += audio_queue->front();
+//        audio_queue->pop();
+//    }
+//
+//    for (int i = 0; i < 8; i++) {//granule_position
+//        cur_page->page_data += audio_queue->front();
+//        audio_queue->pop();
+//    }
+//    for (int i = 0; i < 4; i++) {//serial_number
+//        cur_page->page_data += audio_queue->front();
+//        audio_queue->pop();
+//    }
+//
+//    char page_sequence_number[4];
+//    for (char &i : page_sequence_number) {
+//        i += audio_queue->front();
+//        audio_queue->pop();
+//    }
+//    cur_page->page_sequence_number = (int) (*page_sequence_number);
+//    cout << "page_sequence_number:" << cur_page->page_sequence_number << endl;
+//    cur_page->page_data += page_sequence_number;
+//    for (int i = 0; i < 4; i++) {//CRC_checksum
+//        cur_page->page_data += audio_queue->front();
+//        audio_queue->pop();
+//    }
+//
+//    char *number_page_segments = new char[1];
+//    number_page_segments[0] = audio_queue->front();
+//    audio_queue->pop();
+//
+//    cur_page->page_segments = (int) (*number_page_segments);
+//    cout << "page_segments:" << cur_page->page_segments << endl;
+//    cur_page->page_data += number_page_segments;
+//    if (audio_queue->front() < cur_page->page_segments) {
+//        cout << "wait..." << endl;
+//        return true;
+//    }
+//    for (int i = 0; i < cur_page->page_segments; i++) {
+//        char segment_value = audio_queue->front();
+//        audio_queue->pop();
+//
+//        cur_page->page_data += segment_value;
+//        cur_page->segment_size_queue->push((int) segment_value);
+//    }
+//
+//    cout << "当前page大小 = " << cur_page->page_data << endl;
 
 
 //        int limit = len - position;
@@ -134,4 +136,5 @@ bool ogg_pasrser::feed(char *raw_ata, int len) {
 //            }
 //        }
 //        cout << " " << endl;
+    return true;
 }

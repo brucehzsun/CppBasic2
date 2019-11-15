@@ -2,7 +2,8 @@
 // Created by bruce on 2019-11-15.
 //
 
-
+#include "oggs_page.h"
+#include "ogg_pasrser.h"
 #include <iostream>
 #include <sstream>
 #include <fstream>
@@ -21,7 +22,7 @@ int main() {
     ifstream fin(file_name, ios::in | ios::binary);
     queue<char> audio_queue;
 
-    int buf_size = 32;
+    int buf_size = 32 * 3;
     char buf[buf_size];
     if (!fin.is_open()) {
         cout << "file is not open" << endl;
