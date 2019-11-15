@@ -9,8 +9,9 @@ OggsPage::OggsPage() {
 }
 
 bool OggsPage::append(char data) {
-    if (limit_ <= 3) {
-        head_ += data;
+    if (capacity_ > 0 && limit_ >= capacity_) {
+        cout << "append full; capacity_ = " << this->capacity_ << ", limit = " << limit_ << endl;
+        return false;
     }
 
     str_stream << data;
@@ -92,8 +93,4 @@ int &OggsPage::limit() {
 
 int &OggsPage::getNumberPageSegments() {
     return this->number_page_segments;
-}
-
-string &OggsPage::header() {
-    return this->head_;
 }

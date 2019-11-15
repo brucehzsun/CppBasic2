@@ -25,13 +25,10 @@ public:
 
     int &getNumberPageSegments();
 
-    string &header();
-
 private:
     string data_buf_;//字符缓存
     int capacity_;//总大小
     int limit_;//当前数据的大小
-    string head_;
     int number_page_segments;
     int page_segments;
     bool valid;
