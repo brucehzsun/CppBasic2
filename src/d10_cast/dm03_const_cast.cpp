@@ -14,6 +14,6 @@ void print(const char *p) {
 }
 
 int main() {
-    char buf[] = "abcdefg";
+    const char* buf = "abcdefg";
     print(buf);
 }

@@ -36,9 +36,14 @@ public:
 
 class Tree {
 public:
-    void flow() {
-        cout << "树开花了" << endl;
+    Tree(){
+        cout <<"Tree 构造函数" << endl;
+        a = 100;
     }
+    void flow() {
+        cout << "树开花了"<< a << endl;
+    }
+    int a = 200;
 };
 
 void animalCall(Animal *animal) {
@@ -48,6 +53,7 @@ void animalCall(Animal *animal) {
         dog->doHome();
     }
 
+    //向下转型使用dynamic_cast；
     Cat *cat = dynamic_cast<Cat *>(animal);
     if (cat != nullptr) {
         cat->doThing();
@@ -65,6 +71,7 @@ int main() {
     {
         Dog dog;
         Animal *animal = nullptr;
+        //向上转型使用static_cast
         animal = static_cast<Animal *>(&dog);
         animal->cry();
     }

@@ -8,10 +8,7 @@ using namespace std;
 
 class Teacher {
 public:
-
-    Teacher() {
-
-    }
+    Teacher() {}
 
     Teacher(int age, char *name) {
         this->age = age;
@@ -32,19 +29,23 @@ int main() {
     Teacher t1(20, "tom");
     Teacher t2(25, "jerry");
 
-    string file_name = "test.dat";
+    string file_name = "data/teachers.txt";
+
+    //二进制写文件
     ofstream fout(file_name, ios::out | ios::binary);
     fout.write((const char *) &t1, sizeof(t1));
     fout.write((const char *) &t2, sizeof(t2));
     fout.close();
 
 
+    //二进制读文件
     ifstream fin(file_name, ios::in | ios::binary);
     Teacher tmp;
     fin.read((char *) &tmp, sizeof(t1));
     tmp.print();
     fin.read((char *) &tmp, sizeof(t2));
     tmp.print();
+    fin.close();
 
-
+    return 0;
 }

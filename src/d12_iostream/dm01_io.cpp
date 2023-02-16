@@ -8,19 +8,21 @@ using namespace std;
 
 int main() {
 
-    sh
-    ofstream fout(file_name);
+    string fname = "data/hello.txt";
+
+    //写文件
+    ofstream fout(fname, ios::app);
     fout << "hello 1" << endl;
     fout << "hello 2" << endl;
     fout << "hello 3" << endl;
     fout << "hello 4" << endl;
     fout.close();
 
-    ifstream fin(file_name);
-
-    char ch;
-    while (fin.get(ch)) {
-        cout << ch;
+    //读文件
+    ifstream fin(fname);
+    char buf;
+    while (fin.get(buf)) {
+        cout << buf;
     }
 
     cout << "finish" << endl;
