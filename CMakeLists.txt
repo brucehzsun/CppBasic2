@@ -25,7 +25,7 @@ set(CMAKE_BUILD_TYPE Debug)
 #add_executable(CppBasic_13_01 src/d13_std/dm01_container.cpp)
 #add_executable(CppBasic_13_02 src/d13_std/dm02_string.cpp)
 
-add_executable(CppBasic_14_01 src/d14_container/dm01_vector.cpp)
+#add_executable(CppBasic_14_01 src/d14_container/dm01_vector.cpp)
 #add_executable(CppBasic_14_02 src/d14_container/dm02_stack.cpp)
 #add_executable(CppBasic_14_03 src/d14_container/dm03_queue.cpp)
 #add_executable(CppBasic_14_04 src/d14_container/dm04_list.cpp)
@@ -37,6 +37,6 @@ add_executable(CppBasic_14_01 src/d14_container/dm01_vector.cpp)
 #add_executable(CppBasic_14_09 src/d14_container/dm10_multi_map.cpp)
 
 
-#add_executable(CppBasic_15_01 src/d15_set/dm01_set.cpp)
+add_executable(CppBasic_15_01 src/d15_algorithm/dm01_fun_obj.cpp)
 #add_executable(CppBasic_15_02 src/d15_set/dm02_functor.cpp)
 #add_executable(CppBasic_16_01 src/d16_map/dm01_basic.cpp)

@@ -24,7 +24,7 @@ private:
 int main() {
     int age = 50;
     try {
-        if (age >= 80) {
+        if (age >= 30) {
             throw out_of_range("年龄太大");
         } else {
             throw MyException("未知异常xxx");
